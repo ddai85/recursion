@@ -16,34 +16,36 @@ var stringifyJSON = function(obj) {
   //if function - return undefined
 
   var finalString = '';
-
+  
+  merge = function(add){
+  	finalString = finalString.concat(add);
+  }
 
   if (typeof obj === 'function'){
-    finalString = 'function';
   } else
-  if (typeof obj === undefined){
-  	finalString = 'undefined';
+  if (typeof obj === 'undefined'){
   } else
 
   if (typeof obj === 'string'){
-  	finalString = finalString.concat(obj);
+  	merge(obj);
   	finalString = '\"' + finalString + '\"';
   } else
   if (obj === null){
     finalString = 'null';
   } else
 
-
   if (typeof obj === 'number' || typeof obj === 'boolean'){
-  	finalString = finalString.concat(obj);
+  	merge(obj);
   } else
 
   if (Array.isArray(obj)){
-  	finalString = finalString.concat('[');
-  	finalString = finalString.concat(stringifyJSON(obj[0]));
-  	for (var i = 1; i < obj.length; i++){
+  	merge('[');
+  	if (obj.length > 0){
+  	  finalString = finalString.concat(stringifyJSON(obj[0]));
+  	  for (var i = 1; i < obj.length; i++){
   		finalString = finalString.concat(',');
   		finalString = finalString.concat(stringifyJSON(obj[i]));
+      } 
     }
     finalString = finalString.concat(']');
   } else
@@ -51,19 +53,20 @@ var stringifyJSON = function(obj) {
   if (typeof obj === 'object'){
     finalString = finalString.concat('{');
   	for (var i in obj){
-  		finalString = finalString.concat(stringifyJSON(i));
-  		finalString = finalString.concat(':');
-  		finalString = finalString.concat(stringifyJSON(obj[i]));
-  		finalString = finalString.concat(',');
+  	  if (typeof obj[i] === 'undefined' || typeof obj[i] === 'function'){
+  	  	continue;
+  	  }
+  	  finalString = finalString.concat(stringifyJSON(i));
+  	  finalString = finalString.concat(':');
+  	  finalString = finalString.concat(stringifyJSON(obj[i]));
+      finalString = finalString.concat(',');
     }
-    if (obj != {}){
+    if (finalString != '{'){
     	finalString = finalString.substring(0, finalString.length - 1)
     }
     finalString = finalString.concat('}');
   }
 
-
-  console.log(finalString);
   return finalString;
 
 };
