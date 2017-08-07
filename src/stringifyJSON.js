@@ -17,10 +17,53 @@ var stringifyJSON = function(obj) {
 
   var finalString = '';
 
-  if (typeof obj === ('number' || 'boolean' || 'string' || 'null' || ))
+
+  if (typeof obj === 'function'){
+    finalString = 'function';
+  } else
+  if (typeof obj === undefined){
+  	finalString = 'undefined';
+  } else
+
+  if (typeof obj === 'string'){
+  	finalString = finalString.concat(obj);
+  	finalString = '\"' + finalString + '\"';
+  } else
+  if (obj === null){
+    finalString = 'null';
+  } else
 
 
+  if (typeof obj === 'number' || typeof obj === 'boolean'){
+  	finalString = finalString.concat(obj);
+  } else
+
+  if (Array.isArray(obj)){
+  	finalString = finalString.concat('[');
+  	finalString = finalString.concat(stringifyJSON(obj[0]));
+  	for (var i = 1; i < obj.length; i++){
+  		finalString = finalString.concat(',');
+  		finalString = finalString.concat(stringifyJSON(obj[i]));
+    }
+    finalString = finalString.concat(']');
+  } else
+
+  if (typeof obj === 'object'){
+    finalString = finalString.concat('{');
+  	for (var i in obj){
+  		finalString = finalString.concat(stringifyJSON(i));
+  		finalString = finalString.concat(':');
+  		finalString = finalString.concat(stringifyJSON(obj[i]));
+  		finalString = finalString.concat(',');
+    }
+    if (obj != {}){
+    	finalString = finalString.substring(0, finalString.length - 1)
+    }
+    finalString = finalString.concat('}');
+  }
 
 
+  console.log(finalString);
+  return finalString;
 
 };
