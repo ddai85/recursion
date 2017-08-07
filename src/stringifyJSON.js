@@ -16,30 +16,29 @@ var stringifyJSON = function(obj) {
   //if function - return undefined
 
   var finalString = '';
-  
-  merge = function(add){
-  	finalString = finalString.concat(add);
-  }
 
+//if object is functions -- ignore
   if (typeof obj === 'function'){
   } else
+//if object is undefined -- ignore
   if (typeof obj === 'undefined'){
   } else
-
+//if object is string, concat to finalString
   if (typeof obj === 'string'){
-  	merge(obj);
+  	finalString = finalString.concat(obj);
   	finalString = '\"' + finalString + '\"';
   } else
+//if object is null, finalString is printed 'null'
   if (obj === null){
     finalString = 'null';
   } else
-
+//if object is number or boolean, print corresponding string
   if (typeof obj === 'number' || typeof obj === 'boolean'){
-  	merge(obj);
+  	finalString = finalString.concat(obj);
   } else
-
+//if object is string, use recursion to stringify elements and format with square brackets and comma
   if (Array.isArray(obj)){
-  	merge('[');
+  	finalString = finalString.concat('[');
   	if (obj.length > 0){
   	  finalString = finalString.concat(stringifyJSON(obj[0]));
   	  for (var i = 1; i < obj.length; i++){
@@ -49,13 +48,11 @@ var stringifyJSON = function(obj) {
     }
     finalString = finalString.concat(']');
   } else
-
+//if object is object, use recursion to stringify key/properties and format as object
   if (typeof obj === 'object'){
     finalString = finalString.concat('{');
   	for (var i in obj){
-  	  if (typeof obj[i] === 'undefined' || typeof obj[i] === 'function'){
-  	  	continue;
-  	  }
+  	  if (typeof obj[i] === 'undefined' || typeof obj[i] === 'function'){ continue;}
   	  finalString = finalString.concat(stringifyJSON(i));
   	  finalString = finalString.concat(':');
   	  finalString = finalString.concat(stringifyJSON(obj[i]));
